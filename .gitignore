@@ -1,6 +1,10 @@
 dh/__pycache__/*
 lib/__pycache__/*
 
+key/__pycache__/
+pastebot.net/master_bot_public_key.pem
+master_bot_private_key.pem
+
 *.idea
 .idea
 
