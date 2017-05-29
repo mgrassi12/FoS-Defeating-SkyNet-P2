@@ -22,7 +22,7 @@ def sign_file(f):
 if __name__ == "__main__":
 
     if not os.path.exists("master_bot_private_key.pem") or \
-            not os.path.exists("pastebot.net/master_bot_public_key.pem"):
+            not os.path.exists("master_bot_public_key.pem"):
         key_generator.generate_key_pair()
 
     fn = input("Which file in pastebot.net should be signed? ")

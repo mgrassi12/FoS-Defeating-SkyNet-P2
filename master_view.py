@@ -1,20 +1,27 @@
 import os
 
 from key import key_generator
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Hash import SHA256
 
 
 def decrypt_valuables(f):
-    # TODO: For Part 2, you'll need to decrypt the contents of this file
+    # Decrypt the contents of the file.
     # The existing scheme uploads in plaintext
     # As such, we just convert it back to ASCII and print it out
-    decoded_text = str(f, 'ascii')
-    print(decoded_text)
+    # decoded_text = str(f, 'ascii')
+    # print(decoded_text)
+    key = RSA.importKey(open('master_bot_private_key.pem', 'r').read())
+    cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)
+    plaintext = str(cipher.decrypt(f), 'ascii')
+    print(plaintext)
 
 
 if __name__ == "__main__":
 
     if not os.path.exists("master_bot_private_key.pem") or \
-            not os.path.exists("pastebot.net/master_bot_public_key.pem"):
+            not os.path.exists("master_bot_public_key.pem"):
         key_generator.generate_key_pair()
 
     fn = input("Which file in pastebot.net does the botnet master want to view? ")
