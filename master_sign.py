@@ -7,7 +7,7 @@ from Crypto.Hash import SHA256
 
 
 def sign_file(f):
-    key = RSA.importKey(open('master_bot_private_key.pem', 'r').read())
+    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())
     print(key)
     f_hashed = SHA256.new(f)
     signature = PKCS1_v1_5.new(key).sign(f_hashed)

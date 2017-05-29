@@ -12,7 +12,7 @@ def decrypt_valuables(f):
     # As such, we just convert it back to ASCII and print it out
     # decoded_text = str(f, 'ascii')
     # print(decoded_text)
-    key = RSA.importKey(open('master_bot_private_key.pem', 'r').read())
+    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())
     cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)
     plaintext = str(cipher.decrypt(f), 'ascii')
     print(plaintext)
