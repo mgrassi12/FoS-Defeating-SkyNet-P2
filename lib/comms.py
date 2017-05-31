@@ -52,7 +52,6 @@ class StealthConn(object):
     def send(self, data):
         if self.cipher:  # If a cipher exists on this bot...
             hmac = HMAC.new(((self.key).encode("ascii")), digestmod=SHA256)  # create a HMAC...
-            print(type(data))
             try: data_with_hmac = bytes(hmac.hexdigest() + data.decode("ascii"), "ascii")
             except UnicodeDecodeError:
                 data_with_hmac = bytes(hmac.hexdigest(), "ascii") + data  # and return a bytes
