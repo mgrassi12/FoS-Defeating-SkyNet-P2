@@ -1,7 +1,7 @@
 dh/__pycache__/*
 lib/__pycache__/*
 
-key/__pycache__/
+key/__pycache__/*
 pastebot.net/*
 *.pem
 

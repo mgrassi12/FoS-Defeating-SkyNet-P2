@@ -8,18 +8,17 @@ from Crypto.Hash import SHA256
 
 def decrypt_valuables(f):
     # Decrypt the contents of the file.
-    # The existing scheme uploads in plaintext
-    # As such, we just convert it back to ASCII and print it out
-    # decoded_text = str(f, 'ascii')
-    # print(decoded_text)
-    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())
-    cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)
-    plaintext = str(cipher.decrypt(f), 'ascii')
+    key = RSA.importKey(open('master_bot_private_key.pem', 'rb').read())  # Read the master bot's private key.
+    cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)  # Create the cipher the file was encrypted with
+    # by giving PKCS1_OAEP the private key and hashing algorithm.
+    plaintext = str(cipher.decrypt(f), 'ascii')  # Decrypt the data with this cipher.
     print(plaintext)
 
 
 if __name__ == "__main__":
 
+    # If either the private or public key does not exist,
+    # generate a new key pair.
     if not os.path.exists("master_bot_private_key.pem") or \
             not os.path.exists("master_bot_public_key.pem"):
         key_generator.generate_key_pair()
